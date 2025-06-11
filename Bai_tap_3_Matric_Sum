@@ -1,0 +1,29 @@
+def sum_diagonals(matrix):
+    n = len(matrix)  # Kích thước ma trận (n x n)
+    cheo_chinh = 0
+    cheo_phu = 0
+    
+    for i in range(n):
+        cheo_chinh += matrix[i][i]  # Tổng đường chéo chính
+        cheo_phu += matrix[i][n - i - 1]  # Tổng đường chéo phụ
+    if n % 2 == 1:
+        cheo_chinh -= matrix[n // 2][n // 2]
+    return cheo_chinh + cheo_phu
+# Ma trận a
+matrix_a = [
+    [7, 9, 8],
+    [5, 1, 6],
+    [5, 3, 2]
+    ]
+# Ma trận b
+matrix_b = [
+    [12, 57, 39, 56],
+    [45, 69, 31, 12],
+    [48, 54, 11, 78],
+    [38, 16, 99, 25]
+    ]
+print("Tổng các giá trị trên 2 đường chéo (ma trận a):", sum_diagonals(matrix_a))
+print("Tổng các giá trị trên 2 đường chéo (ma trận b):", sum_diagonals(matrix_b))
+
+
+

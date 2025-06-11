@@ -1,0 +1,7 @@
+matrix = [("a", 2), (9, 0), (7, "b"), (8, 2)]
+
+list1 = [x[0] for x in matrix]
+list2 = [x[1] for x in matrix]
+
+print("List 1:", list1)
+print("List 2:", list2)

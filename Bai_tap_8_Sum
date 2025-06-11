@@ -1,0 +1,13 @@
+def tong_cach_1(n):
+    tong = 0
+    for temp in range(n + 1):
+        tong += temp
+    return tong
+
+def tong_cach_2(n):
+    return n * (n + 1) // 2
+
+n = int(input("Nhập số tự nhiên n > 0: "))
+print("Tổng từ 0 đến", n, "theo cách 1 (vòng lặp):", tong_cach_1(n))
+print("Tổng từ 0 đến", n, "theo cách 2 (công thức):", tong_cach_2(n))
+

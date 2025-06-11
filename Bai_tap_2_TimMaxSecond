@@ -1,0 +1,23 @@
+data = [58432,14356532,1143513,786538,13553,'256624',84723.135]
+
+numbers = []
+for item in data:
+    try:
+        number = float(item)
+        numbers.append(number)
+    except:
+        print(f"Phần tử nhập không hợp lệ: {item}")
+if len(numbers) < 2:
+    print("Danh sách không đủ phần tử để tìm hai số lớn nhất.")
+else:
+    max1 = max2 = float('-inf') #Khai báo max1 và max2 ban đầu là số nhỏ nhất
+    for num in numbers:
+        if num > max1:
+            max2 = max1
+            max1 = num
+        elif num > max2 and num != max1:
+            max2 = num
+    if max2 == float('-inf'):
+        print("Không tìm thấy hai số lớn nhất khác nhau.")
+    else:
+        print(f"Hai số lớn nhất là: max2 = {max2}")

@@ -1,0 +1,16 @@
+data = [2, 4, 5, 71, 2, 3, 2, 45, 71, 3, 4, 6, 5, 0, "0", 1, 2, 3, 6, 8, 45, 71, 90, 3]
+
+data_seri = []
+for item in data:
+    seri = int(item)
+    data_seri.append(seri)
+# Cách 1 – Dùng set
+value_set_loop = list(set(data_seri))
+print("Cách 1 - Dùng set:", value_set_loop)
+
+# Cách 2 – Dùng vòng lặp
+value_loop = []
+for item in data_seri:
+    if item not in value_loop:
+        value_loop.append(item)
+print("Cách 2 - Dùng vòng lặp:", value_loop)

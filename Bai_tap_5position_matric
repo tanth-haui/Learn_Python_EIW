@@ -1,0 +1,17 @@
+matrix = [
+    [9, 0, 1, 3],
+    ["0", 9, "a", 2],
+    [6, 0, "-", 1],
+    ["7,8", 9, 10, 22]
+]
+non_numeric_positions = []
+non_numeric_value = []
+for i in range(len(matrix)):
+    for j in range(len(matrix[i])):
+        if not isinstance(matrix[i][j], (int, float)):
+            non_numeric_positions.append((i, j))
+            non_numeric_value.append(matrix[i][j])
+print("Vị trí và giá trị phần tử không phải là số:")
+for (row, col), value in zip(non_numeric_positions, non_numeric_value):
+    print(f"Hàng: {row+1}, Cột: {col+1}, Giá trị: {value}")
+

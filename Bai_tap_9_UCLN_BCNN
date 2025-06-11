@@ -1,0 +1,20 @@
+def ucln(m, n):
+    while n !=m:
+        if m > n:
+            m = m - n
+        else:
+            n = n - m
+    return m
+
+def bcnn(m, n):
+    temp = max(m, n)
+    while True:
+        if temp % m == 0 and temp % n == 0:
+            return temp
+        temp += max(m, n)
+    return temp
+    #return m * n // ucln(m, n)
+m = int(input("Bài 9 - Nhập số tự nhiên m > 0: "))
+n = int(input("Bài 9 - Nhập số tự nhiên n > 0: "))
+print("Ước chung lớn nhất (UCLN):", ucln(m, n))
+print("Bội chung nhỏ nhất (BCNN):", bcnn(m, n))

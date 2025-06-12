@@ -7,3 +7,11 @@ self.checkbox_save = self.ui.findChild(QtWidgets.QCheckBox, "checkBox_save")
 # Lấy flag được check trong checkbox không 
 # checkbox_save trả về giá trị True False
 flag_checkbox_save = self.checkbox_save.isChecked()
+
+
+
+@pyqtSlot()
+def on_button_file_summary_clicked(self):
+    # Lấy path của 1 file gán vào biến self._input_file_summary
+    folder = QFileDialog.getOpenFileName(None, 'Choose file summary', filter='*.xlsm')[0]
+    self._input_file_summary.setText(folder)

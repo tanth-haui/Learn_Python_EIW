@@ -1,0 +1,9 @@
+# Kết nối với comboBox
+self.comboBox_lang = self.ui.findChild(QtWidgets.QComboBox, "comboBox_lang")
+# Lấy text được hiển thị trong combobox
+text_combobox_lang = self.comboBox_lang.currentText()
+# Kết nối với checkbox
+self.checkbox_save = self.ui.findChild(QtWidgets.QCheckBox, "checkBox_save")
+# Lấy flag được check trong checkbox không 
+# checkbox_save trả về giá trị True False
+flag_checkbox_save = self.checkbox_save.isChecked()

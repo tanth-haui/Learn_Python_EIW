@@ -1,0 +1,24 @@
+class Windows(QMainWindow):
+    def __init__(self):
+        # kế thừa các thuộc tính và phương thức của QMainWindow
+        super().__init__()
+        # path_file_ui là đường dẫn đến thư mục
+        path_file_ui = r'app\Templates\main.ui'
+        # câu lệnh để kết nối với file .ui
+        self.ui = uic.loadUi(path_file_ui, self)
+        # self._input_folder là Tên đối tượng
+        # QtWidgets.QLineEdit là Loại Qtwidgets
+        # "input_folder" là Tên tương ứng với tên đối tượng tạo trong Qt designer
+        self.input_folder = self.ui.findChild(QtWidgets.QLineEdit, "input_folder")
+        # tạo _button_folder kết đối tượng là button (QPushButton) với có tên button_folder
+        self.button_folder = self.ui.findChild(QtWidgets.QPushButton, "button_folder")
+        # self._button_folder là đối tượng
+        # connect với  hàm on_button_folder_clicked (slot)
+        # signal là self._button_folder.clicked
+        self.button_folder.clicked.connect(lambda: self.on_button_folder_clicked())
+    @pyqtSlot()
+    def on_button_folder_clicked(self):
+        # Hàm chọn path folder
+        folder_path = QtWidgets.QFileDialog.getExistingDirectory(self, 'Choose folder')
+        # gán path folder lấy từ câu lệnh trên và đưa vào đối tượng self.input_folder_images để hiển thị
+        self.input_folder.setText(folder_path)

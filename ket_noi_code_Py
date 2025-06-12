@@ -1,0 +1,24 @@
+importsys
+fromPyQt5.QtWidgets import QApplication, QWidget, QMainWindow
+from PyQt5.QtWidgets import QLineEdit
+from PyQt5.QtCore import pyqtSlot
+
+from template.WindowMain_ import Ui_MainWindow
+
+class Windows(QMainWindow):
+    def __init__(self):
+
+        # kế thừa các thuộc tính và phương thức của QMainWindow
+        super().__init__()
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
+
+        self._input_folder_images = self.findChild(QLineEdit, "input_folder_images")
+        self._input_file_summary = self.findChild(QLineEdit, "input_file_summary")
+
+if __name__ == "__main__":
+    # Gọi class và show giao diện lên màn hình
+    app = QApplication(sys.argv)
+    window = Windows()
+    window.show()
+    app.exec_()

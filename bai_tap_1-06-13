@@ -1,0 +1,67 @@
+import openpyxl
+from openpyxl.styles import Font, PatternFill
+
+file_path = r'C:\Training-Code\Python\Code_Folder\\Data_Excel\Raw Data.xlsx'
+
+workbook = openpyxl.load_workbook(file_path)
+
+customers_sheet = workbook['customers']
+products_sheet = workbook['products']
+
+# Chỉnh sửa tiêu đề
+header_fill = PatternFill(start_color='FFA9D08E', end_color='FFA9D08E', fill_type='solid')
+for cell in customers_sheet[1]:  
+    cell.fill = header_fill
+    cell.font = Font(size=24, bold=True)
+
+# Thay thế ô trống trong cột Customer Name bằng NaN
+for row in range(2, customers_sheet.max_row + 1):
+    cell_value = customers_sheet.cell(row=row, column=2).value
+    if cell_value is None or str(cell_value).strip() == '':
+        customers_sheet.cell(row=row, column=2).value = 'NaN'
+
+# Thay đổi font chữ cho toàn bộ sheet
+for row in customers_sheet.iter_rows():
+    for cell in row:
+        cell.font = Font(name='Times New Roman')  
+
+# Tạo sheet mới . Tên sheet là “Test3”
+test3_sheet = workbook.create_sheet(title='Test3')
+
+# Copy sheet “products” sang sheet “Test3”
+for row in products_sheet.iter_rows(values_only=True):
+    test3_sheet.append(row)
+
+# Thay đổi màu cho các hàng có cột Country bằng United States
+for row in range(2, customers_sheet.max_row + 1):
+    county_name = customers_sheet.cell(row=row, column=7)
+    if county_name == 'United States':
+        # for cell in customers_sheet[row]:
+        cell.fill = PatternFill(start_color='5BB517', end_color='5BB517', fill_type='solid')
+
+# Tính số lượng thành phố có trong cột City
+city_values = set()
+for row in range(2, customers_sheet.max_row + 1):
+    city = customers_sheet.cell(row=row, column=6).value
+    if city:
+        city_values.add(city)
+print(f"Số lượng thành phố có trong cột City: {len(city_values)}")
+
+# In ra thông tin của những người không có số điện thoại
+print("Thông tin những người không có số điện thoại:")
+for row in range(2, customers_sheet.max_row + 1):
+    phone_number = customers_sheet.cell(row=row, column=4).value
+    if phone_number is None:
+        customer_info = [customers_sheet.cell(row=row, column=i).value for i in range(1, customers_sheet.max_column + 1)]
+        print(customer_info)
+
+# Loại bỏ những hàng không chứa thông tin gmail và số điện thoại
+rows_to_delete = []
+for row in range(2, customers_sheet.max_row + 1):
+    email = customers_sheet.cell(row=row, column=3).value
+    phone_number = customers_sheet.cell(row=row, column=4).value
+    if not email or '@gmail.com' not in email or phone_number is None:
+        rows_to_delete.append(row)
+
+workbook.save(file_path)
+workbook.close()

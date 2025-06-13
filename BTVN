@@ -1,0 +1,49 @@
+Tạo một file thống kê dữ liệu một lớp học với những yêu cầu sau đây:1. Tạo file Input gồm 2 file bên dưới:
+File Excel1
+Tên File [Report.xlsx]
+Hai sheet [Danh sánh, đánh giá]
+Trong sheet [Danh sách]: Tự tạo dữ liệu cho sheet danh sách gồm các thông tin mã học sinh, tên học sinh, giới tính, địa chỉ
+Với dữ cột giới tính, cứ cách một bạn lại để trống một bạn.
+Với dữ liệu cột địa chỉ, cứ cách hai bạn lại để trống một bạn.
+Bảng được định dạng như sau:
+Tiêu đề bảng: FFA9D08E  (#A9D08E), size 24, bold, alignment:center. 
+Sheet có font chữ Times New Roman, size 11, normal, alignment:left
+File Excel2
+Tên file [Data.xlsx]
+Dữ liệu gồm mã học sinh và điểm các môn
+Số lượng môn tự chọn và không nhỏ hơn 3 môn
+Điểm các môn được lấy random từ 1 -> 10
+
+2. Xử lý:
+Trong sheet Danh sách kiểm tra và bôi đỏ những dữ liệu bị bỏ trống
+Lấy dữ liệu từ file excel2 để tính toán và đưa ra danh sách điểm trung bình của các học sinh được sắp xếp từ cao xuống thấp.
+Dữ liệu tính toán ở trên được lưu trữ trong sheet [đánh giá] của file [Report.xlsx]
+Định dạng của bảng dữ liệu giống định dạng của bảng Danh sách học sinh .
+Có thể thực hiện được cả khi File Report.xlsx khi đang đóng hoặc mở.
+
+
+Sheet products
+1.Chỉnh màu nền tiêu đề #A9D08E, size 24, bold.
+2.Tính tổng cột Unit Price và Profit
+3.Tính trung bình lợi nhuận của mỗi loại cà phê
+4.Chuyển đổi cột E thành kiểu int
+5.Tính tổng số lượng Roast Type  bằng ‘L’
+6.Lọc các thông tin Coffee Type  = ‘Ara’
+7.Cell trong coffee type bị trống thì điền vào là Rob.
+8.Các ô trống còn lại điền NaN
+9.Xóa 2 phần tử đầu cột Price per 100
+10.Xóa 2 phần tử cuối cột G
+
+
+Sheet customers
+Chỉnh màu nền tiêu đề FFA9D08E  (#A9D08E), size 24, bold. 
+Ở cột Customer Name, ô trống thì để NaN. 
+Sheet có font chữ Times New Roman 
+Tạo sheet mới . Tên sheet là “Test3”
+Copy sheet “products” sang sheet “Test3”
+Các hàng có cột Country  bằng United States  thì chuyển thành màu #5BB517
+Tính số lượng thành phố có trong cột City
+In ra thông tin của những người không có số điện thoại
+Loại bỏ những hàng không chứa thông tin gmail và số điện thoại
+
+

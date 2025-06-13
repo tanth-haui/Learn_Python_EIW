@@ -1,0 +1,108 @@
+import xlwings as xw
+import numpy as np
+
+path = r'C:\Training-Code\Python\Code_Folder\\Data_Excel\Raw Data.xlsx'
+wb = xw.Book(path)
+products_sheet = wb.sheets['products']
+
+# 1. Chỉnh màu nền tiêu đề #A9D08E, size 24, bold.
+header_range = products_sheet.range('A1:H1')
+header_range.color = "#A9D08E"
+header_range.font.size = 24
+header_range.font.bold = True
+
+# 2. Tính tổng cột Unit Price và Profit
+price_values = products_sheet.range('E2:E' + str(products_sheet.cells.last_cell.row)).value
+profit_values = products_sheet.range('G2:G' + str(products_sheet.cells.last_cell.row)).value
+
+unit_price_total = 0
+profit_total = 0
+
+for value in price_values:
+    if value is not None and isinstance(value, (int, float)):
+        unit_price_total += value
+for value in profit_values:
+    if value is not None and isinstance(value, (int, float)):
+        profit_total += value
+
+# In ra kết quả
+print(f"Tổng cột Unit Price: {unit_price_total:.4f}")
+print(f"Tổng cột Profit: {profit_total:4f}")
+
+# 3. Tính trung bình lợi nhuận của mỗi loại cà phê
+last_row = products_sheet.used_range.last_cell.row
+coffee_types = products_sheet.range(f'B2:B{last_row}').value
+profits = products_sheet.range(f'G2:G{last_row}').value
+
+coffee_types = list(filter(None, coffee_types))
+profits = list(filter(None, profits))
+
+profit_avg = {}
+
+for coffee_type, profit in zip(coffee_types, profits):
+    if coffee_type not in profit_avg:
+        profit_avg[coffee_type] = []
+    profit_avg[coffee_type].append(profit)
+for coffee_type in profit_avg:
+    profit_avg[coffee_type] = np.mean(profit_avg[coffee_type])
+
+# In kết quả
+print("Trung bình lợi nhuận của mỗi loại cà phê:")
+for coffee_type, avg in profit_avg.items():
+    print(f"{coffee_type}: {avg:.4f}")
+
+# 4. Chuyển đổi cột E thành kiểu int
+last_row = products_sheet.used_range.last_cell.row  
+column_e_values = products_sheet.range(f'E2:E{last_row}').value  
+converted_values = []
+for value in column_e_values:
+    converted_values.append(int(value) if isinstance(value, (int, float)) else None)
+formatted_values = [[value] for value in converted_values]
+products_sheet.range(f'E2:E{last_row}').value = formatted_values
+
+# 5. Tính tổng số lượng Roast Type bằng ‘L’
+last_row = products_sheet.used_range.last_cell.row  
+roast_type_values = products_sheet.range(f'C2:C{last_row}').value  
+roast_type_count = roast_type_values.count('L')
+print(f"Tổng số lượng Roast Type 'L' là: {roast_type_count}")
+
+# 6. Lọc các thông tin Coffee Type = ‘Ara’
+last_row = products_sheet.used_range.last_cell.row  
+product_ids = products_sheet.range(f'A2:A{last_row}').value  
+coffee_types = products_sheet.range(f'B2:B{last_row}').value  
+product_info = list(zip(product_ids, coffee_types))
+ara_coffee_info = [row for row in product_info if row[1] == 'Ara']
+print("Thông tin sản phẩm có Coffee Type = 'Ara':")
+for product_id, coffee_type in ara_coffee_info:
+    print(f"Product ID: {product_id} | Coffee Type: {coffee_type}")
+
+# 7. Cell trong coffee type bị trống thì điền vào là Rob.
+last_row = products_sheet.used_range.last_cell.row  
+coffee_type_range = products_sheet.range(f'B2:B{last_row}')
+for cell in coffee_type_range:
+    if cell.value is None or str(cell.value).strip() == '':
+        cell.value = "Rob"
+
+# 8. Các ô trống còn lại điền NaN
+last_row = products_sheet.used_range.last_cell.row  
+data_range = products_sheet.range(f'A2:G{last_row}')
+for row in data_range:
+    for cell in row:
+        if cell.value is None or str(cell.value).strip() == '':
+            cell.value = "NaN"
+
+# 9. Xóa 2 phần tử đầu cột Price per 100
+last_row = products_sheet.used_range.last_cell.row  
+price_per_100_range = products_sheet.range(f'F2:F{last_row}')
+rows_to_clear = price_per_100_range[0:2]
+rows_to_clear.clear() 
+
+# 10. Xóa 2 phần tử cuối cột G
+last_row = products_sheet.used_range.last_cell.row  
+price_per_100_range = products_sheet.range(f'G2:G{last_row}')
+rows_to_clear = price_per_100_range[-2:]
+rows_to_clear.clear() 
+
+# Lưu workbook
+wb.save()
+wb.close()

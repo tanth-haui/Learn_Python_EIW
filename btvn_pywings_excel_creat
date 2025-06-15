@@ -1,0 +1,90 @@
+import xlwings as xw
+import random
+import os
+
+# Danh sách tên, địa chỉ
+ho = ["Nguyễn", "Trần", "Lê", "Phạm", "Hoàng", "Phan", "Vũ", "Ngọ", "Đặng", "Bùi"]
+ten_dem = ["Thị", "Văn", "Hồng", "Đức", "Ngọc", "Minh", "Gia", "Trung", "Thanh", "Anh"]
+ten = ["An", "Bình", "Chi", "Dũng", "Hà", "Hải", "Hưng", "Khánh", "Lan", "Linh",
+       "Giang", "Nam", "Nga", "Phong", "Quân", "Sơn", "Trang", "Tú", "Vy", "Yến"]
+
+addresses = [
+    "Hà Nội", "Hồ Chí Minh", "Đà Nẵng", "Hải Phòng", "Thanh Hóa", "Nha Trang",
+    "Huế", "Vũng Tàu", "Quảng Ninh", "Thanh Hóa", "Bình Dương", "Bắc Ninh",
+    "Hải Dương", "Nam Định", "Thái Bình", "Phú Thọ", "Vĩnh Phúc", "Bình Thuận"
+]
+
+def generate_vietnamese_name():
+    return f"{random.choice(ho)} {random.choice(ten_dem)} {random.choice(ten)}"
+
+def generate_random_address():
+    city = random.choice(addresses)
+    number = random.randint(1, 200)
+    street_num = random.randint(1, 50)
+    return f"Số {number}, Đường {street_num}, {city}"
+
+# Đường dẫn lưu
+path = r"D:\Code_learn\BTVN\06-13\Xlwings"
+os.makedirs(path, exist_ok=True)
+
+# ======== TẠO FILE Report.xlsx ========
+wb1 = xw.Book()
+ws_ds = wb1.sheets[0]
+ws_ds.name = "Danh sách"
+ws_dg = wb1.sheets.add("Đánh giá")
+
+# Tiêu đề
+ws_ds.range("A1:E1").merge()
+ws_ds.range("A1").value = "Danh sách học sinh"
+ws_ds.range("A1").font.size = 24
+ws_ds.range("A1").font.bold = True
+ws_ds.range("A1").api.HorizontalAlignment = -4108
+
+# Header có thêm cột STT
+headers = ["STT", "Mã HS", "Tên HS", "Giới tính", "Địa chỉ"]
+ws_ds.range("A2:E2").value = headers
+ws_ds.range("A2:E2").api.HorizontalAlignment = -4108
+
+# Danh sách học sinh
+students = []
+for i in range(1, 101):
+    if i % 2 == 0:
+        gender = ""
+    else:
+        gender = random.choice(["Nam", "Nữ"])
+    address = generate_random_address() if i % 3 != 0 else ""
+    students.append([f"HS{i:02}", generate_vietnamese_name(), gender, address])
+
+# Ghi dữ liệu với cột STT
+ws_ds.range("A3").value = [[idx] + student for idx, student in enumerate(students, start=1)]
+
+ws_ds.autofit()
+# Lưu file Report.xlsx
+report_file = os.path.join(path, "Report.xlsx")
+wb1.save(report_file)
+wb1.close()
+
+# ======== TẠO FILE Data.xlsx ========
+wb2 = xw.Book()
+ws2 = wb2.sheets[0]
+ws2.name = "Data"
+subjects = ["Toán", "Lý", "Hóa", "Văn", "Sử", "Địa", "Anh", "Tin"]
+
+# Header thêm STT và Tên HS
+ws2.range("A1:J1").value = ["STT", "Mã HS", "Tên HS"] + subjects
+
+# Tạo dict mã HS → tên HS
+student_name_dict = {student[0]: student[1] for student in students}
+
+# Ghi dữ liệu với điểm ngẫu nhiên
+ws2.range("A2").value = [
+    [idx, student[0], student[1]] + [random.randint(1, 10) for _ in subjects]
+    for idx, student in enumerate(students, start=1)
+]
+
+ws2.autofit()
+
+# Lưu file Data.xlsx
+data_file = os.path.join(path, "Data.xlsx")
+wb2.save(data_file)
+wb2.close()

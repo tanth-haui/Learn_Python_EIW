@@ -1,0 +1,75 @@
+import xlwings as xw
+import os
+
+# Định nghĩa đường dẫn file
+data_path = r"D:\Code_learn\BTVN\06-13\Xlwings\Data.xlsx"
+report_path = r"D:\Code_learn\BTVN\06-13\Xlwings\Report.xlsx"
+
+# Mở file Report
+wb_report = xw.Book(report_path)
+ws_ds = wb_report.sheets["Danh sách"]
+
+students = [f"HS{str(i).zfill(2)}" for i in range(1, 101)]
+
+# Bôi đỏ các ô trống trong cột C, D, E
+for row in range(3, len(students) + 3):
+    for col in ["C", "D", "E"]:
+        cell = ws_ds.range(f"{col}{row}")
+        if cell.value in (None, ""):
+            cell.color = (255, 0, 0)  # Màu đỏ
+
+ws_ds.autofit()
+
+# ======== ĐÁNH GIÁ HỌC SINH ========
+ws_eval = wb_report.sheets["Đánh giá"]
+
+# Tiêu đề
+ws_eval.range("A1:D1").merge()
+ws_eval.range("A1").value = "Đánh giá học sinh"
+ws_eval.range("A1").font.size = 24
+ws_eval.range("A1").font.bold = True
+ws_eval.range("A1").api.HorizontalAlignment = -4108
+
+# Header
+ws_eval.range("A2:D2").value = ["STT", "Mã HS", "Tên HS", "Điểm TB"]
+ws_eval.range("A2:D2").api.HorizontalAlignment = -4108
+
+# Mở file Data
+wb_data = xw.Book(data_path)
+ws_data = wb_data.sheets["Data"]
+subjects = ["Toán", "Lý", "Hóa", "Văn", "Sử", "Địa", "Anh", "Tin"]
+
+# Đọc dữ liệu và tạo dict mã HS → tên HS
+student_name_dict = {}
+score_dict = {}
+
+for row in range(2, len(students) + 2):
+    ma_hs = ws_data.range(f"B{row}").value
+    ten_hs = ws_data.range(f"C{row}").value
+    scores = ws_data.range(f"D{row}:K{row}").value  # 8 môn → D-K
+
+    if isinstance(scores, list) and all(isinstance(s, (int, float)) for s in scores):
+        avg_score = round(sum(scores) / len(subjects), 2)
+    else:
+        avg_score = 0  # Nếu dữ liệu lỗi
+
+    if ma_hs:
+        student_name_dict[ma_hs] = ten_hs
+        score_dict[ma_hs] = avg_score
+
+# Sắp xếp theo điểm TB giảm dần
+sorted_scores = sorted(score_dict.items(), key=lambda x: x[1], reverse=True)
+
+# Ghi dữ liệu đánh giá
+evaluation_data = [
+    [idx, ma_hs, student_name_dict.get(ma_hs, ""), diem_tb]
+    for idx, (ma_hs, diem_tb) in enumerate(sorted_scores, start=1)
+]
+
+ws_eval.range(f"A3:D{len(evaluation_data) + 2}").value = evaluation_data
+ws_eval.autofit()
+
+# Lưu & đóng file
+wb_report.save()
+wb_report.close()
+wb_data.close()

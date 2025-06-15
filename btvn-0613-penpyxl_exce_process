@@ -1,0 +1,83 @@
+import openpyxl
+from openpyxl.styles import Font, Alignment, PatternFill
+from openpyxl.utils import get_column_letter
+
+# Hàm tự động điều chỉnh độ rộng cột
+def autofit_column_width(ws):
+    for col_cells in ws.columns:
+        max_length = 0
+        col_index = None
+
+        for cell in col_cells:
+            if cell.coordinate in ws.merged_cells:
+                continue
+
+            if cell.value is not None:
+                if col_index is None:
+                    col_index = cell.column
+                try:
+                    max_length = max(max_length, len(str(cell.value)))
+                except:
+                    pass
+
+        if col_index:
+            col_letter = get_column_letter(col_index)
+            ws.column_dimensions[col_letter].width = max_length + 2
+
+# Định nghĩa đường dẫn file
+data_path = r"D:\Code_learn\BTVN\06-13\Openpyxl\Data.xlsx"
+Report_path = r"D:\Code_learn\BTVN\06-13\Openpyxl\Report.xlsx"
+
+# Mở file Report.xlsx
+wb = openpyxl.load_workbook(Report_path)
+ws = wb["Danh sách"]
+
+# Bôi đỏ ô trống cột Tên HS, Giới tính, Địa chỉ (cột 3,4,5 tương ứng C,D,E)
+red_fill = PatternFill(start_color="FF0000", end_color="FF0000", fill_type="solid")
+for row in ws.iter_rows(min_row=3, min_col=3, max_col=5):
+    for cell in row:
+        if cell.value in (None, ""):
+            cell.fill = red_fill
+
+# Tự động điều chỉnh độ rộng cột sau khi cập nhật
+autofit_column_width(ws)
+
+# Mở file Data.xlsx
+wb_data = openpyxl.load_workbook(data_path)
+ws_data = wb_data["Data"]
+
+# Khởi tạo dict Mã HS → Tên HS để sử dụng sau
+student_name_dict = {row[1]: row[2] for row in ws_data.iter_rows(min_row=2, values_only=True)}
+
+# Tính điểm trung bình, bỏ qua cột STT (1) và Tên HS (3)
+score_dict = {
+    row[1]: round(sum([x for x in row[3:] if isinstance(x, (int, float))]) / len(row[3:]), 2)
+    for row in ws_data.iter_rows(min_row=2, values_only=True)
+}
+
+# Đóng workbook Data.xlsx sau khi xử lý xong
+wb_data.close()
+
+# Sắp xếp giảm dần theo điểm TB
+sorted_scores = sorted(score_dict.items(), key=lambda x: x[1], reverse=True)
+
+# Ghi sheet "đánh giá" có thêm cột Tên HS
+ws_eval = wb["đánh giá"]
+ws_eval.merge_cells('A1:D1')
+ws_eval['A1'] = "Đánh giá học sinh"
+ws_eval['A1'].font = Font(name='Times New Roman', size=24, bold=True)
+ws_eval['A1'].alignment = Alignment(horizontal='center')
+ws_eval['A1'].fill = PatternFill(start_color="A9D08E", end_color="A9D08E", fill_type="solid")
+
+ws_eval.append(["STT", "Mã HS", "Tên HS", "Điểm TB"])
+
+for idx, (ma_hs, diem_tb) in enumerate(sorted_scores, start=1):
+    ten_hs = student_name_dict.get(ma_hs, "")
+    ws_eval.append([idx, ma_hs, ten_hs, diem_tb])
+
+# Tự động điều chỉnh độ rộng cột cho sheet "đánh giá"
+autofit_column_width(ws_eval)
+
+# Lưu file kết quả
+wb.save(Report_path)
+

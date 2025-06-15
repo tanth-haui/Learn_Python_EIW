@@ -1,0 +1,117 @@
+import openpyxl
+from openpyxl.styles import Font, Alignment, PatternFill
+import random
+from openpyxl.utils import get_column_letter
+import os
+
+# Hàm tự động điều chỉnh độ rộng cột
+def autofit_column_width(ws):
+    for col_cells in ws.columns:
+        max_length = 0
+        col_index = None
+
+        for cell in col_cells:
+            if cell.coordinate in ws.merged_cells:
+                continue
+
+            if cell.value is not None:
+                if col_index is None:
+                    col_index = cell.column
+                try:
+                    max_length = max(max_length, len(str(cell.value)))
+                except:
+                    pass
+
+        if col_index:
+            col_letter = get_column_letter(col_index)
+            ws.column_dimensions[col_letter].width = max_length + 2
+            
+# Danh sách tên, địa chỉ
+ho = ["Nguyễn", "Trần", "Lê", "Phạm", "Hoàng", "Phan", "Vũ", "Ngọ", "Đặng", "Bùi"]
+ten_dem = ["Thị", "Văn", "Hồng", "Đức", "Ngọc", "Minh", "Gia", "Trung", "Thanh", "Anh"]
+ten = ["An", "Bình", "Chi", "Dũng", "Hà", "Hải", "Hưng", "Khánh", "Lan", "Linh",
+       "Giang", "Nam", "Nga", "Phong", "Quân", "Sơn", "Trang", "Tú", "Vy", "Yến"]
+
+addresses = [
+    "Hà Nội", "Hồ Chí Minh", "Đà Nẵng", "Hải Phòng", "Thanh Hóa", "Nha Trang",
+    "Huế", "Vũng Tàu", "Quảng Ninh", "Thanh Hóa", "Bình Dương", "Bắc Ninh",
+    "Hải Dương", "Nam Định", "Thái Bình", "Phú Thọ", "Vĩnh Phúc", "Bình Thuận"
+]
+
+def generate_vietnamese_name():
+    return f"{random.choice(ho)} {random.choice(ten_dem)} {random.choice(ten)}"
+
+def generate_random_address():
+    city = random.choice(addresses)
+    number = random.randint(1, 200)
+    street_num = random.randint(1, 50)
+    return f"Số {number}, Đường {street_num}, {city}"
+
+# Đường dẫn lưu
+path = r"D:\Code_learn\BTVN\06-13\Openpyxl"
+os.makedirs(path, exist_ok=True)
+
+# ======== TẠO FILE Report.xlsx ========
+wb1 = openpyxl.Workbook()
+ws_ds = wb1.active
+ws_ds.title = "Danh sách"
+ws_dg = wb1.create_sheet("đánh giá")
+
+# Style
+header_font = Font(name='Times New Roman', size=24, bold=True)
+normal_font = Font(name='Times New Roman', size=11)
+center = Alignment(horizontal='center')
+fill = PatternFill(start_color="A9D08E", end_color="A9D08E", fill_type="solid")
+red_fill = PatternFill(start_color="FF0000", end_color="FF0000", fill_type="solid")
+
+# Tiêu đề
+ws_ds.merge_cells('A1:E1')
+ws_ds['A1'] = "Danh sách học sinh"
+ws_ds['A1'].font = header_font
+ws_ds['A1'].alignment = center
+ws_ds['A1'].fill = fill
+
+# Header có thêm cột STT
+ws_ds.append(["STT", "Mã HS", "Tên HS", "Giới tính", "Địa chỉ"])
+
+# Danh sách học sinh
+students = []
+for i in range(1, 101):
+    if i % 2 == 0:
+        gender = ""
+    else:
+        gender = random.choice(["Nam", "Nữ"])
+    address = generate_random_address() if i % 3 != 0 else ""
+    students.append([f"HS{i:03}", generate_vietnamese_name(), gender, address])
+
+# Ghi dữ liệu với cột STT
+for idx, student in enumerate(students, start=1):
+    ws_ds.append([idx] + student)
+
+# Tự động điều chỉnh độ rộng cột
+autofit_column_width(ws_ds)
+
+# Lưu file Report.xlsx
+report_file = os.path.join(path, "Report.xlsx")
+wb1.save(report_file)
+
+# ======== TẠO FILE Data.xlsx ========
+wb2 = openpyxl.Workbook()
+ws2 = wb2.active
+ws2.title = "Data"
+subjects = ["Toán", "Lý", "Hóa", "Văn", "Sử", "Địa", "Anh", "Tin"]
+
+# Header thêm STT và Tên HS
+ws2.append(["STT", "Mã HS", "Tên HS"] + subjects)
+
+# Tạo dict mã HS → tên HS để dùng sau
+student_name_dict = {student[0]: student[1] for student in students}
+
+# Ghi dữ liệu với STT, Mã HS, Tên HS và điểm
+for idx, student in enumerate(students, start=1):
+    scores = [random.randint(1, 10) for _ in subjects]
+    ws2.append([idx, student[0], student[1]] + scores)
+
+# Lưu file Data.xlsx
+data_file = os.path.join(path, "Data.xlsx")
+wb2.save(data_file)

@@ -1,0 +1,88 @@
+import pandas as pd
+
+empl_rate_path = r"C:\Training-Code\Python\Code_Folder\06-16\Data_Excel\Employment_Japan - empl_rate.csv"
+employment_path = r"C:\Training-Code\Python\Code_Folder\06-16\Data_Excel\Employment_Japan - employment.csv"
+
+empl_rate_read = pd.read_csv(empl_rate_path)
+employment_read = pd.read_csv(employment_path)
+
+
+#kiểm tra 2 file có dữ liệu có bị trùng lặp
+
+duplicates_empl_rate = empl_rate_read.duplicated().sum()
+duplicates_employment = employment_read.duplicated().sum()
+
+print("Dữ liệu bị trùng lặp trong Employment_Japan - empl_rate:")
+print(duplicates_empl_rate)
+print("\nDữ liệu bị trùng lặp trong Employment_Japan - employment:")
+print(duplicates_employment)
+
+#kiểm tra 2 file có dữ liệu có bị thiếu
+
+missing_empl_rate = empl_rate_read.isnull().sum().sum()
+missing_emploment = employment_read.isnull().sum().sum()
+
+print("\nDữ liệu bị thiếu trong Employment_Japan - empl_rate:")
+print(missing_empl_rate)
+print("\nDữ liệu bị thiếu trong Employment_Japan - employment:")
+print(missing_emploment)
+
+#lấy dữ liệu của năm 2021 trong 2 file
+
+data_2021_empl_rate = empl_rate_read[empl_rate_read["year"] == 2021]
+data_2021_employment = employment_read[employment_read["year"] == 2021]
+
+print("\nDữ liệu năm 2021 trong Employment_Japan - empl_rate:")
+print(data_2021_empl_rate)
+print("\nDữ liệu năm 2021 trong Employment_Japan - employment:")
+print(data_2021_employment)
+
+# 3. Tỉ lệ thất nghiệp của năm 2019
+unemployment_rate_2019 = empl_rate_read[(empl_rate_read["year"] == 2019) & (empl_rate_read["emp_type"] == "unemployment rate (%)")]
+print(f"\nTỉ lệ thất nghiệp của năm 2019 là:")
+print(unemployment_rate_2019)
+
+# 4. Trong năm 2017 nhóm người lao động nào có số lượng nhiều nhất
+data_2017_employment = employment_read[employment_read["year"] == 2017]
+most_workers_2017 = data_2017_employment.loc[data_2017_employment["total"].idxmax()]
+
+print(f"\nNhóm người lao động có số lượng nhiều nhất trong năm 2017 là: {most_workers_2017["type"]} có số lượng {most_workers_2017["total"]}")
+
+# 5. Năm có tỉ lệ việc làm cao nhất
+empl_rate_read["total_rate"] = empl_rate_read["male"] + empl_rate_read["female"]
+max_employment_row = empl_rate_read.loc[empl_rate_read["total_rate"].idxmax()]
+max_employment_year = max_employment_row["year"]
+max_employment_rate = max_employment_row["total_rate"]
+
+print(f"Năm có tỷ lệ việc làm cao nhất là: {max_employment_year} với tỷ lệ {max_employment_rate:.2f}%")
+
+#6. chuyển đổi dữ liệu
+
+# Xây dựng hàm chuyển đổi DataFrame
+def convert_df(file):
+    # Đọc file csv
+    df= pd.read_csv(file)
+    # Khởi tạo danh sách các cột khả dụng sau khi chuyển đổi
+    columns = ["Year", "Gender"] + list(df.iloc[:,1].unique())
+    # Khởi tạo data dưới dạng dictionary
+    data = {}
+    for col in columns:
+        data[col] = []
+    # Lọc lấy các năm
+    years = df.iloc[:,0].unique()
+    # Khởi tạo list giới tính khả dụng
+    genders = ["male", "female"]
+    # Đưa giá trị tương ứng vào từng cell
+    for i in range(len(years)*2): # Số lượng dòng = số năm * số giới tính khả dụng
+        data["Year"].append(years[i//2])
+        data["Gender"].append(genders[i%2])
+        for col in columns[2:]:
+            data[col].append(df.loc[(df["year"] == years[i//2]) & 
+                                (df.iloc[:,1] == col), genders[i%2]].values[0])
+    # Tạo DataFrame mới
+    df = pd.DataFrame(data)
+    # Lưu ra file csv mới
+    df.to_csv(file[:-4]+"_new.csv", index=False)
+
+convert_df(empl_rate_path)
+convert_df(employment_path)

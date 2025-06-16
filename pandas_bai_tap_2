@@ -6,7 +6,7 @@ Ngày nào có lượng tweet đăng lên nhiều nhất?
 Tài khoản nào có nhiều tweet nhất?
 Trong các tweet, ký tự nào xuất hiện nhiều nhất? Lưu 20 ký tự được dùng ra 1 file .csv (sử dụng hàm to_csv có sẵn)
 
-
+https://pandas.pydata.org/docs/reference/index.html#api
 
 
 

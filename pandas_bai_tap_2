@@ -1,0 +1,35 @@
+import pandas as pd
+import numpy as np
+from collections import Counter
+import csv
+
+file_path = r"C:\Training-Code\Python\Code_Folder\06-16\Data_Excel\Twitter ML Data.csv"
+twitter_df = pd.read_csv(file_path)
+
+twitter_df.info()
+twitter_df = twitter_df.dropna(how='all')  # Xóa dòng không có dữ liệu
+twitter_df = twitter_df.dropna(axis=1, how='all')  # Xóa cột không có dữ liệu
+twitter_df['Timestamp'] = pd.to_datetime(twitter_df.iloc[:, 3], format='%a %b %d %H:%M:%S %z %Y')
+saturday_tweets_count = twitter_df[twitter_df['Timestamp'].dt.dayofweek == 5].shape[0]  # Thứ 7 là 5
+print(f'Số lượng tweet được đăng vào thứ 7: {saturday_tweets_count}')
+# c) Có bao nhiêu tweet có link trong nội dung?
+link_tweets_count = twitter_df[twitter_df['2'].str.contains('http://|https://')].shape[0]
+print(f'Số lượng tweet có link trong nội dung: {link_tweets_count}')
+# d) Ngày nào có lượng tweet đăng lên nhiều nhất?
+tweet_counts_by_day = twitter_df['Timestamp'].dt.date.value_counts()
+most_tweets_day = tweet_counts_by_day.idxmax()
+most_tweets_count = tweet_counts_by_day.max()
+print(f'Ngày có lượng tweet đăng lên nhiều nhất: {most_tweets_day} với {most_tweets_count} tweet(s)')
+# e) Tài khoản nào có nhiều tweet nhất?
+top_account = twitter_df['Name'].value_counts().idxmax()
+top_account_count = twitter_df['Name'].value_counts().max()
+print(f'Tài khoản có nhiều tweet nhất: {top_account} với {top_account_count} tweet(s)')
+# f) Trong các tweet, ký tự nào xuất hiện nhiều nhất? Lưu 20 ký tự được dùng ra 1 file .csv
+# Tính tần suất xuất hiện của các ký tự
+all_characters = ''.join(twitter_df['2'])
+char_counts = pd.Series(list(all_characters)).value_counts()
+# Lấy 20 ký tự xuất hiện nhiều nhất
+top_20_chars = char_counts.head(20)
+# Lưu vào file CSV
+top_20_chars.to_csv('top_20_characters.csv', header=['Count'], index_label='Character')
+print('Đã lưu 20 ký tự xuất hiện nhiều nhất vào file top_20_characters.csv')

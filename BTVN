@@ -1,3 +1,5 @@
+/////////////////////Thứ 6 13/6/////////////////////////////
+
 Tạo một file thống kê dữ liệu một lớp học với những yêu cầu sau đây:1. Tạo file Input gồm 2 file bên dưới:
 File Excel1
 Tên File [Report.xlsx]
@@ -46,4 +48,13 @@ Tính số lượng thành phố có trong cột City
 In ra thông tin của những người không có số điện thoại
 Loại bỏ những hàng không chứa thông tin gmail và số điện thoại
 
+/////////////////////Thứ 2 16/6/////////////////////////////
+
+Sử dụng file test_dataset.csv (Dùng file test_dataset.xlsx để xem dữ liệu) thực hiện các yêu cầu sau:
+Lọc loại bỏ các dòng và cột không có dữ liệu nào
+Truy xuất lấy ra dữ liệu của khách hàng đăng ký quê hương là Hà Nội
+Truy xuất lấy ra dữ liệu những khách hàng đăng ký bắt đầu trong năm 2020
+Truy xuất lấy ra dữ liệu của những khách hàng hiện tại đang ở Nhật
+Có bao nhiêu khách hàng sử dụng trên 1 số điện thoại
+Có bao nhiêu khách hàng thuộc các nhóm sau (tính tại thời điểm hiện tại): Dưới 18 tuổi, 18-23, 24-30, 30 tuổi trở lên
 

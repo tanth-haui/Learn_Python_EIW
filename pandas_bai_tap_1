@@ -1,3 +1,16 @@
+Sử dụng file Employment_Japan - empl_rate.csv (giả sử tỉ lệ nam nữ là ngang nhau) và file Employment_Japan - employment.csv thực hiện các yêu cầu sau:
+Kiểm tra xem 2 file có dữ liệu nào bị lặp hoặc bị thiếu không?
+Lấy ra dữ liệu của năm 2021 trong 2 file
+Tỉ lệ thất nghiệp của năm 2019 là bao nhiêu?
+Trong năm 2017 nhóm người lao động nào có số lượng nhiều nhất?
+Năm có tỉ lệ việc làm cao nhất là năm nào?
+Chuyển đổi 2 Dataframe như bên slide sau và lưu vào 2 file csv:
+
+
+
+
+
+
 import pandas as pd
 
 empl_rate_path = r"C:\Training-Code\Python\Code_Folder\06-16\Data_Excel\Employment_Japan - empl_rate.csv"

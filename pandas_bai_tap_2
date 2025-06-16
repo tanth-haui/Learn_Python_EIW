@@ -1,3 +1,15 @@
+Sử dụng file Twitter ML Data.csv thực hiện các yêu cầu sau:
+Xóa các dòng và các cột không có dữ liệu gì cả
+Có bao nhiêu tweet được đăng vào thứ 7?
+Có bao nhiêu tweet có link trong nội dung?
+Ngày nào có lượng tweet đăng lên nhiều nhất?
+Tài khoản nào có nhiều tweet nhất?
+Trong các tweet, ký tự nào xuất hiện nhiều nhất? Lưu 20 ký tự được dùng ra 1 file .csv (sử dụng hàm to_csv có sẵn)
+
+
+
+
+
 import pandas as pd
 import numpy as np
 from collections import Counter

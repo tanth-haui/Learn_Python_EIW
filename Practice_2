@@ -1,0 +1,57 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import random
+
+# Đường dẫn thư mục chứa các file CSV
+folder_path = r"C:\Training-Code\Python\Code_Folder\06-17\Data_Excel"
+
+# Danh sách tên các file CSV
+file_names = [
+    "data practice (1).csv",
+    "data practice (2).csv",
+    "data practice (3).csv",
+    "data practice (4).csv"
+]
+
+# Tên tín hiệu cần vẽ
+signal_1 = "vFNRPM\\XETK:1[]"  # Tín hiệu cho Figure 1
+signal_2 = "vQAACV\\XETK:1[]"  # Tín hiệu cho Figure 2
+
+# Hàm vẽ tín hiệu
+def plot_signal(file_path, signal_name, figure_title):
+    # Đọc dữ liệu từ file CSV
+    try:
+        df = pd.read_csv(file_path, encoding='utf-8')  # Thử đọc với UTF-8
+    except UnicodeDecodeError:
+        df = pd.read_csv(file_path, encoding='latin1')  # Nếu UTF-8 lỗi, dùng latin1
+    
+    # Kiểm tra xem tín hiệu có tồn tại trong dữ liệu không
+    if signal_name not in df.columns:
+        print(f"Tín hiệu '{signal_name}' không tồn tại trong file: {file_path}")
+        return
+
+    # Lấy dữ liệu tín hiệu
+    signal_data = df[signal_name]
+    time_data = df["Time"]  # Lấy cột "Time"
+    
+    # Tạo Figure và Axes
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.plot(time_data, signal_data, label=signal_name, color="blue")
+    ax.set_title(figure_title)
+    ax.set_xlabel("Time")
+    ax.set_ylabel(signal_name)
+    ax.legend()
+    
+    # Hiển thị biểu đồ
+    plt.tight_layout()
+    plt.show()
+
+# Duyệt qua từng file và vẽ các figure
+for file_name in file_names:
+    file_path = f"{folder_path}\\{file_name}"
+    
+    # Vẽ Figure 1: Tín hiệu vFNRPM\XETK:1[]
+    plot_signal(file_path, signal_1, f"Figure: {file_name} - {signal_1}")
+    
+    # Vẽ Figure 2: Tín hiệu vQAACV\XETK:1[]
+    plot_signal(file_path, signal_2, f"Figure: {file_name} - {signal_2}")

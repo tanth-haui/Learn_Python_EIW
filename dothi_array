@@ -1,0 +1,83 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Đường dẫn lưu ảnh
+output_path = r"C:\Training-Code\Python\Code_Folder\06-17\picture\pic.png"
+
+# Dữ liệu bước chân theo ngày trong tuần
+days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+steps_walked = [8934, 14902, 3409, 25672, 12300, 2023, 6890]
+steps_last_week = [9788, 8710, 5308, 17630, 21309, 4002, 5223]
+
+# Hàm vẽ hình trái tim
+def plot_heart(ax, scale=1, color='#ff0000'):
+    t = np.linspace(0, 2 * np.pi, 1000)
+    x = scale * (16 * np.sin(t)**3)
+    y = scale * (13 * np.cos(t) - 5 * np.cos(2*t) - 2 * np.cos(3*t) - np.cos(4*t))
+    ax.plot(x, y, color=color)
+    ax.fill(x, y, color=color, alpha=0.3)
+    ax.set_title('Heart Shape')
+    ax.axis('equal')
+    ax.grid(True)
+
+# Hàm vẽ hình ô tô
+def plot_car(ax):
+    car_body_x = [0, 1, 1, 0, 0]
+    car_body_y = [0, 0, 0.5, 0.5, 0]
+    ax.plot(car_body_x, car_body_y, color='blue')
+    ax.fill(car_body_x, car_body_y, color='blue', alpha=0.3)
+    wheel1 = plt.Circle((0.25, 0), 0.1, color='black')
+    wheel2 = plt.Circle((0.75, 0), 0.1, color='black')
+    ax.add_patch(wheel1)
+    ax.add_patch(wheel2)
+    ax.set_title('Car Shape')
+    ax.axis('equal')
+    ax.grid(True)
+
+# Hàm vẽ hai người đang đánh nhau
+def plot_fight(ax):
+    person1_body_x = [0.2, 0.3, 0.3, 0.2, 0.2]
+    person1_body_y = [0.2, 0.2, 0.5, 0.5, 0.2]
+    ax.plot(person1_body_x, person1_body_y, color='green')
+    ax.fill(person1_body_x, person1_body_y, color='green', alpha=0.3)
+    person1_head = plt.Circle((0.25, 0.6), 0.1, color='green')
+    ax.add_patch(person1_head)
+
+    person2_body_x = [0.7, 0.8, 0.8, 0.7, 0.7]
+    person2_body_y = [0.2, 0.2, 0.5, 0.5, 0.2]
+    ax.plot(person2_body_x, person2_body_y, color='red')
+    ax.fill(person2_body_x, person2_body_y, color='red', alpha=0.3)
+    person2_head = plt.Circle((0.75, 0.6), 0.1, color='red')
+    ax.add_patch(person2_head)
+
+    ax.set_title('Fight Scene')
+    ax.axis('equal')
+    ax.grid(True)
+
+# Tạo biểu đồ tổng hợp
+fig, axs = plt.subplots(3, 3, figsize=(10, 10))
+
+axs[0, 0].plot(days, steps_walked, "o-g")
+axs[0, 0].plot(days, steps_last_week, "v--m")
+axs[0, 0].set_title("Step count by lines")
+axs[0, 0].legend(["This week", "Last week"])
+
+axs[2, 0].bar(days, steps_walked)
+axs[2, 0].bar(days, steps_last_week)
+axs[2, 0].set_title("Step count by columns")
+axs[2, 0].legend(["This week", "Last week"])
+
+# axs[1, 2].bar(days, steps_walked)
+# axs[1, 2].bar(days, steps_last_week)
+# axs[1, 2].set_title("Step count by columns")
+# axs[1, 2].legend(["This week", "Last week"])
+
+plot_heart(axs[2, 2], scale=1, color='#ff0000')
+plot_car(axs[1, 1])
+plot_fight(axs[0, 2])
+
+plt.tight_layout()
+
+plt.savefig(output_path)
+
+plt.show()

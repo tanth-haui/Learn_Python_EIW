@@ -1,0 +1,65 @@
+import pandas as pd
+from datetime import datetime
+
+# Đọc dữ liệu
+data_path = r"C:\Training-Code\Python\Code_Folder\06-16\BTVN\Excel_data\test_dataset.csv"
+df = pd.read_csv(data_path, low_memory=False)
+
+# 1. Loại bỏ dòng và cột toàn null
+removed_rows = df[df.isnull().all(axis=1)]
+removed_cols = df.columns[df.isnull().all(axis=0)]
+
+df.dropna(how='all', inplace=True)
+df.dropna(axis=1, how='all', inplace=True)
+
+print("1. Các dòng bị loại bỏ (toàn bộ giá trị đều null):")
+if removed_rows.empty:
+    print("Không có dòng nào bị loại bỏ.")
+else:
+    print(removed_rows)
+print("\n1. Các cột bị loại bỏ (toàn bộ giá trị đều null):")
+if len(removed_cols) == 0:
+    print("Không có cột nào bị loại bỏ.")
+else:
+    print(list(removed_cols))
+
+# Chuẩn hóa dữ liệu vị trí
+for col in ['currentLocationCity', 'currentLocationCountry']:
+    if col in df.columns:
+        df[col] = df[col].astype(str).str.strip().str.lower()
+
+# 2. Khách hàng quê Hà Nội
+Customers_Hanoi = df[df['currentLocationCity'].isin(['hanoi'])]
+print("\n2. Khách hàng có quê hương là Hà Nội:")
+print(Customers_Hanoi)
+
+# 3. Khách hàng đăng ký năm 2020
+df['F_startDate'] = pd.to_datetime(df['F_startDate'], errors='coerce')
+Customers_2020 = df[df['F_startDate'].dt.year == 2020]
+print("\n3. Khách hàng đăng ký trong năm 2020:")
+print(Customers_2020)
+
+# 4. Khách hàng hiện tại ở Nhật
+Customers_Japan = df[df['currentLocationCountry'].isin(['japan'])]
+print("\n4. Khách hàng hiện tại đang ở Nhật:")
+print(Customers_Japan)
+
+# 5. Khách hàng dùng trên 1 số điện thoại
+Number_multiple_phones = df[df['num_of_phone'] > 1].shape[0]
+print(f"\n5. Số lượng khách hàng sử dụng trên 1 số điện thoại: {Number_multiple_phones}")
+
+# 6. Phân nhóm tuổi
+df['ngaySinh'] = pd.to_datetime(df['ngaySinh'], errors='coerce')
+df['so_tuoi'] = datetime.now().year - df['ngaySinh'].dt.year
+
+age_bins = {
+    'Dưới 18 tuổi': df['so_tuoi'] < 18,
+    'Từ 18-23 tuổi': df['so_tuoi'].between(18, 23),
+    'Từ 24-30 tuổi': df['so_tuoi'].between(24, 30),
+    'Trên 30 tuổi': df['so_tuoi'] > 30
+}
+
+print("\nPhân nhóm tuổi khách hàng:")
+for label, condition in age_bins.items():
+    count = df[condition].shape[0]
+    print(f"6. Số lượng khách hàng {label}: {count}")

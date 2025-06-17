@@ -58,3 +58,13 @@ Truy xuất lấy ra dữ liệu của những khách hàng hiện tại đang �
 Có bao nhiêu khách hàng sử dụng trên 1 số điện thoại
 Có bao nhiêu khách hàng thuộc các nhóm sau (tính tại thời điểm hiện tại): Dưới 18 tuổi, 18-23, 24-30, 30 tuổi trở lên
 
+/////////////////////Thứ 3 17/6/////////////////////////////
+
+Sử dụng file test_dataset.xlsx tại ngày học 4 (pandas) và thực hiện các yêu cầu sau:
+Vẽ biểu đồ cột thể hiện số lượng người đăng ký tại từng tỉnh thành (gợi ý: sử dụng cột “currentLocationCity”).
+Vẽ biểu đồ tròn thể hiện tỷ lệ khách hàng đang ở nước ngoài và tỷ lệ khách hàng đang ở Việt Nam trên tổng số khách hàng (gợi ý: sử dụng cột “currentLocationCountry”).
+Vẽ biểu đồ tròn thể hiện tỷ lệ khách hàng có nhiều số điện thoại và tỷ lệ khách hàng có 1 số điện thoại trên tổng số khách hàng (gợi ý: sử dụng cột “num_of_phone”).
+Vẽ biểu đồ tròn thể hiện tỷ lệ nhóm khách có số lượng bạn bè dưới 100 người, từ 100 đến 1000 người và trên 1000 người (gợi ý: sử dụng cột “friendCount”).
+Lưu ý: chỉ thực hiện vẽ đồ thị trên các khách hàng có đủ thông tin tại 4 cột: “currentLocationCity”, “currentLocationCountry”, “num_of_phone”, “friendCount”
+
+

@@ -1,0 +1,89 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import random
+
+# Đường dẫn thư mục chứa các file CSV
+folder_path = r"C:\Training-Code\Python\Code_Folder\06-17\Data_Excel"
+
+# Danh sách tên các file CSV
+file_names = [
+    "data practice (1).csv",
+    "data practice (2).csv",
+    "data practice (3).csv",
+    "data practice (4).csv"
+]
+
+# Hàm vẽ biểu đồ cho file CSV
+def plot_signals(file_path, file_name, ax):
+    # Đọc dữ liệu từ file CSV với mã hóa phù hợp
+    try:
+        df = pd.read_csv(file_path, encoding='utf-8')  # Thử đọc với UTF-8
+    except UnicodeDecodeError:
+        df = pd.read_csv(file_path, encoding='latin1')  # Nếu UTF-8 lỗi, dùng latin1
+    # Xóa các cột có toàn bộ giá trị bằng 0
+    df = df.loc[:, (df != 0).any(axis=0)]
+    
+    # Xóa các giá trị rỗng
+    df = df.dropna()
+    
+    # Lấy danh sách các cột tín hiệu
+    signals = list(df.columns)
+    signals.remove("Time")  # Loại bỏ cột "Time" khỏi danh sách tín hiệu
+    
+    # Kiểm tra xem có tín hiệu nào còn lại không
+    if len(signals) < 2:
+        print(f"Không có đủ tín hiệu để vẽ biểu đồ trong file {file_name}.")
+        return
+    
+    # Chọn ngẫu nhiên 2 tín hiệu
+    selected_signals = random.sample(signals, 2)
+    signal_1 = df[selected_signals[0]]
+    signal_2 = df[selected_signals[1]]
+    
+    # In giá trị của hai tín hiệu được chọn để kiểm tra
+    print(f"Tín hiệu 1 ({selected_signals[0]}):")
+    print(signal_1.head())
+    print(f"Tín hiệu 2 ({selected_signals[1]}):")
+    print(signal_2.head())
+    
+    # Tính giá trị trung bình của 2 tín hiệu
+    mean_1 = signal_1.mean()
+    mean_2 = signal_2.mean()
+    
+    ax.set_title(f"Biểu đồ từ file: {file_name}")
+    ax.set_xlabel("Time")
+    
+    if mean_1 >= 10 * mean_2 or mean_2 >= 10 * mean_1:
+        # Nếu chênh lệch lớn, vẽ 2 trục y-axis
+        ax.plot(df["Time"], signal_1, label=selected_signals[0], color="blue", linestyle="-")
+        ax.set_ylabel(selected_signals[0], color="blue")
+        ax.tick_params(axis="y", labelcolor="blue")
+        
+        # Thêm trục y thứ 2
+        ax2 = ax.twinx()
+        ax2.plot(df["Time"], signal_2, label=selected_signals[1], color="red", linestyle="--")
+        ax2.set_ylabel(selected_signals[1], color="red")
+        ax2.tick_params(axis="y", labelcolor="red")
+        
+        # Chú thích được đặt ở góc trên bên phải
+        ax.legend(loc="upper right")
+    else:
+        # Nếu không chênh lệch lớn, vẽ trên cùng một trục y-axis
+        ax.plot(df["Time"], signal_1, label=selected_signals[0], color="blue", linestyle="-")
+        ax.plot(df["Time"], signal_2, label=selected_signals[1], color="red", linestyle="--")
+        
+        # Chú thích được đặt ở góc trên bên phải
+        ax.legend(loc="upper right")
+
+# Tạo Figure và Axes cho đồ thị mảng 2x2
+fig, axs = plt.subplots(2, 2, figsize=(15, 10))
+
+# Duyệt qua từng file và gọi hàm vẽ biểu đồ
+for i, file_name in enumerate(file_names):
+    file_path = f"{folder_path}\\{file_name}"
+    row, col = divmod(i, 2)  # Tính toán vị trí của subplot
+    plot_signals(file_path, file_name, axs[row, col])
+
+# Hiển thị biểu đồ
+plt.tight_layout()
+plt.show()

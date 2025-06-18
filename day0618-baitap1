@@ -1,0 +1,115 @@
+from pathlib import Path
+import pickle
+import json
+import shutil
+
+
+class Employee():
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+ex_folder = Path(r"C:\Training-Code\Python\Code_Folder\06-18\Data\Exercise_Day_6_1")
+
+# Dùng glob() để list ra tất cả các file .pickle
+pickle_file_list = list(ex_folder.glob("*.pickle"))
+if len(pickle_file_list) == 0:
+    raise FileNotFoundError("Không tìm thấy file .pickle trong thư mục.")
+
+pickle_file_path = pickle_file_list[0]
+# print(pickle_file_path)
+
+# Đọc file pickle để lấy list nhân viên (list object của class Employee)
+with open(pickle_file_path, "rb") as f:
+    employee_list = pickle.load(f)
+
+for employee in employee_list:
+    print(employee.name)
+    print(employee.age)
+
+# Dùng Glob() để list ra tất cả các file JSON
+json_file_list = list(ex_folder.glob("*.json"))
+print(json_file_list)
+
+json_name_list = []  # Khởi tạo giá trị mặc định
+json_email_list = []  # Khởi tạo giá trị mặc định
+selected_json_file_path = None
+
+for json_file in json_file_list:
+    with open(json_file, "r") as f:
+        json_content = json.load(f)
+        print(json_content)
+        if isinstance(json_content, list):
+            continue
+        else:
+            if ("Name" in json_content) and ("Email" in json_content):
+                json_name_list = json_content["Name"]
+                json_email_list = json_content["Email"]
+                selected_json_file_path = json_file
+                break
+
+if not json_name_list or not json_email_list:
+    raise ValueError("Không tìm thấy file JSON phù hợp với các trường 'Name' và 'Email'.")
+
+print(json_name_list)
+print(json_email_list)
+
+# Dùng Glob() để list ra tất cả các file .txt
+txt_file_list = list(ex_folder.glob("*.txt"))
+print(txt_file_list)
+
+company_name = None  # Khởi tạo giá trị mặc định
+selected_txt_file_path = None
+
+for txt_path in txt_file_list:
+    with open(txt_path, "r") as f:
+        first_line = f.readline()
+        if first_line.strip() == "This file is about the company name":
+            company_name = f.readline().strip()
+            selected_txt_file_path = txt_path
+            break
+
+if not company_name:
+    raise ValueError("Không tìm thấy file .txt chứa thông tin công ty.")
+
+print(company_name)
+
+# Tạo output_dict
+output_dict = {
+    "name": [],
+    "age": [],
+    "email": [],
+    "company": []
+}
+
+for employee in employee_list:
+    output_dict["name"].append(employee.name)
+    output_dict["age"].append(employee.age)
+    if employee.name in json_name_list:
+        employee_index = json_name_list.index(employee.name)
+        employee_email = json_email_list[employee_index]
+        output_dict["email"].append(employee_email)
+    else:
+        output_dict["email"].append(None)  # Nếu không tìm thấy email, thêm giá trị None
+
+output_dict["company"] = [company_name] * len(employee_list)
+
+print(output_dict)
+
+# Khởi tạo đường dẫn đến thư mục "Employee_folder"
+employee_folder_path = ex_folder / "Employee_folder"
+# print(employee_folder_path)
+employee_folder_path.mkdir(parents=True, exist_ok=True)
+
+# Lưu output_dict vào file JSON
+json_output_path = employee_folder_path / "employee.json"
+# print(json_output_path)
+with open(json_output_path, "w") as f:
+    json.dump(output_dict, f, indent=4)
+
+# Di chuyển các file đã xử lý vào thư mục "Employee_folder"
+if selected_json_file_path:
+    shutil.move(selected_json_file_path, employee_folder_path / "selected_json_file.json")
+if selected_txt_file_path:
+    shutil.move(selected_txt_file_path, employee_folder_path / "selected_txt_file.txt")
+shutil.move(pickle_file_path, employee_folder_path)

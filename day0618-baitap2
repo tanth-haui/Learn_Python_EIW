@@ -1,0 +1,58 @@
+from pathlib import Path
+import shutil
+import pickle
+import json
+
+
+# Đường dẫn thư mục "Exercise_Day_6_2"
+exercise_folder = Path(r"C:\Training-Code\Python\Code_Folder\06-18\Data\Exercise_Day_6_2")
+all_files_folder = exercise_folder / "All Files"
+
+# Tìm file .pickle trong thư mục "Exercise_Day_6_2"
+pickle_file_list = list(exercise_folder.glob("*.pickle"))
+if len(pickle_file_list) == 0:
+    raise FileNotFoundError("Không tìm thấy file .pickle trong thư mục.")
+pickle_file_path = pickle_file_list[0]  # Lấy file .pickle đầu tiên
+print(f"File pickle được tìm thấy: {pickle_file_path}")
+
+# Đọc file .pickle để lấy danh sách các đuôi file
+with open(pickle_file_path, "rb") as f:
+    file_extensions = pickle.load(f)
+print(f"Danh sách đuôi file từ pickle: {file_extensions}")
+
+# Tạo thư mục "File information"
+file_info_folder = Path(r"C:\Training-Code\Python\Code_Folder\06-18\Data\File_information")
+file_info_folder.mkdir(parents=True, exist_ok=True)
+
+# 1. Tạo file zip_file_list.txt trong thư mục "File information"
+zip_file_list_path = file_info_folder / "zip_file_list.txt"
+with open(zip_file_list_path, "w") as f:
+    for file_path in all_files_folder.rglob("*.zip"):  # Tìm tất cả các file .zip (kể cả trong thư mục con)
+        f.write(str(file_path) + "\n")
+print(f"Danh sách file .zip đã được lưu vào: {zip_file_list_path}")
+
+# 2. Tạo thư mục con "All NS Files" và copy các file .ns
+all_ns_files_folder = file_info_folder / "All NS Files"
+all_ns_files_folder.mkdir(parents=True, exist_ok=True)
+
+ns_file_count = 1  # Đếm số lượng file .ns
+for ns_file_path in all_files_folder.rglob("*.ns"):  # Tìm tất cả các file .ns (kể cả trong thư mục con)
+    new_file_name = f"File{ns_file_count}.ns"
+    shutil.copy(ns_file_path, all_ns_files_folder / new_file_name)  # Copy và đổi tên file
+    ns_file_count += 1
+print(f"Các file .ns đã được copy vào thư mục: {all_ns_files_folder}")
+
+# 3. Tạo dict lưu số lượng file theo đuôi file
+file_count_dict = {}
+for extension in file_extensions:
+    file_count_dict[extension] = len(list(all_files_folder.rglob(f"*{extension}")))  # Đếm số lượng file theo đuôi
+
+# Lưu dict thành file_count.json trong thư mục "File information"
+file_count_json_path = file_info_folder / "file_count.json"
+with open(file_count_json_path, "w") as f:
+    json.dump(file_count_dict, f, indent=4)
+print(f"Dict số lượng file theo đuôi đã được lưu vào: {file_count_json_path}")
+
+# In kết quả ra màn hình để kiểm tra
+print("Nội dung file_count.json:")
+print(json.dumps(file_count_dict, indent=4))

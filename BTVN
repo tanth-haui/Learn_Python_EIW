@@ -67,4 +67,36 @@ Vẽ biểu đồ tròn thể hiện tỷ lệ khách hàng có nhiều số đi
 Vẽ biểu đồ tròn thể hiện tỷ lệ nhóm khách có số lượng bạn bè dưới 100 người, từ 100 đến 1000 người và trên 1000 người (gợi ý: sử dụng cột “friendCount”).
 Lưu ý: chỉ thực hiện vẽ đồ thị trên các khách hàng có đủ thông tin tại 4 cột: “currentLocationCity”, “currentLocationCountry”, “num_of_phone”, “friendCount”
 
+/////////////////////Thứ 4 18/6/////////////////////////////
+Bai tap 1:
+Tải thư mục "Exercise_Day_6_1" về, thư mục này chứa một vài file json, một vài file txt và một file pickle. Mỗi file json chứa một dict hoặc một list, và chỉ có một file json đúng chứa một dict có cả hai key "Name" và "Email". Trong số các file txt, chỉ có một file txt đúng có dòng đầu tiên viết "This file is about the company name" và tên công ty nằm ở dòng thứ hai. File pickle chứa một list các đối tượng nhân viên thuộc class Employee:
+	class Employee():
+    	    def __init__(self, name, age):
+        	    	self.name = name
+        	    	self.age = age
+Viết một chương trình Python để lấy list nhân viên từ file pickle. Đối với tất cả các nhân viên trong list, lấy địa chỉ email của họ từ file json đúng và tên công ty trong file txt đúng. Tạo một dict theo dạng sau:
+	{
+	    "name": [<list tên các nhân viên trong file pickle>],
+	    "age": [<list tuổi tương ứng của các nhân viên>],
+	    "email": [<list email tương ứng của các nhân viên>],
+	    "company": "<tên công ty >"
+	}
+Tạo một thư mục mới có tên "Employee_folder" . Lưu dict này vào "Employee_folder" dưới dạng "employee.json". Đổi tên file json đúng thành "selected_json_file.json", file txt đúng thành "selected_txt_file.txt". Di chuyển 2 file này cùng với file pickle đến thư mục "Employee_folder". Nộp thư mục "Employee_folder" và file .py.
+
+bai tap 2
+Tải thư mục "Exercise_Day_6_2" về. Thư mục này gồm 1 file .pickle và 1 folder tên "All Files", trong đó chứa nhiều file và nhiều thư mục con. Trong file .pickle lưu 1 biến là 1 list các tên đuôi file (Ví dụ [".jpg", ".png",...].Đây chỉ là ví dụ, trong file .pickle sẽ là một list các tên đuôi khác). Viết chương trình Python:
+
+Tạo 1 thư mục mới tên "File information" (có thể tạo ở đâu cũng được, ngoại trừ trong thư mục "All Files")
+Tạo file zip_file_list.txt trong thư mục  "File information", trong đó liệt kê đường dẫn của tất cả các file .zip nằm trong thư mục "All Files" (kể cả trong các thư mục con) (mỗi đường dẫn 1 dòng)
+Tạo 1 thư mục con mới tên "All NS Files" trong thư mục "File information", copy tất cả các file đuôi .ns trong All File vào thư mục "All NS Files" và đổi tên các file lần lượt thành "File1.ns", "File2.ns", "File3.ns",... 
+Tạo một dict, trong đó key là các tên đuôi file lấy từ file .pickle, value là số file có đuôi file tương ứng nằm trong thư mục "All Files" (kể cả trong các thư mục con). Ví dụ:
+		{
+	    		".jpg": 20,
+	   		".png": 35,
+	    		..
+		}
+và lưu dict này thành file_count.json trong thư mục "File information"
+
+
+
 

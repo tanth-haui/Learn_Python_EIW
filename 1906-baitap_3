@@ -1,0 +1,88 @@
+import subprocess
+import pyautogui
+import time
+
+# Đường dẫn đến ứng dụng Paint
+paint_path = r"C:\Windows\system32\mspaint.exe"
+subprocess.Popen(paint_path)
+
+#delay để paint mở hoàn toàn
+time.sleep(3)
+
+# Vẽ hình vuông
+def draw_square(x, y, size):
+    pyautogui.moveTo(x, y)  # Di chuyển đến vị trí bắt đầu
+    pyautogui.mouseDown()   # Nhấn chuột để bắt đầu vẽ
+    pyautogui.moveRel(size, 0)  # Vẽ cạnh trên
+    pyautogui.moveRel(0, size)   # Vẽ cạnh phải
+    pyautogui.moveRel(-size, 0)  # Vẽ cạnh dưới
+    pyautogui.moveRel(0, -size)  # Vẽ cạnh trái
+    pyautogui.mouseUp()     # Nhả chuột để kết thúc vẽ
+
+# Kích thước các hình vuông
+square_size_1 = 400
+square_size_2 = 600
+square_size_3 = 400
+# Tọa độ cho các hình vuông
+draw_square(560, 300, square_size_1)
+draw_square(600, 350, square_size_2)
+draw_square(850, 580, square_size_3)
+
+
+# Vẽ hình xoắn ốc
+screen_width, screen_height = pyautogui.size()
+# screen_width, screen_height = 1920, 1200 # Nhập kích thước màn hình của bạn
+
+center_x = screen_width // 2
+center_y = screen_height // 2
+
+print(center_x)
+print(center_y)
+
+# def draw_spiral(x, y, initial_size, turns):
+#      size = initial_size
+#      for i in range(turns):
+#           pyautogui.moveTo(x, y)
+#           pyautogui.mouseDown()
+#           pyautogui.moveRel(size, 0)
+#           pyautogui.moveRel(0, -size)
+#           pyautogui.moveRel(-2*size, 0)
+#           pyautogui.moveRel(0, 2*size)
+
+
+# draw_spiral(center_x, center_y, 30, 1)
+
+def draw_spiral(center_x, center_y, initial_size, turns):
+    size = initial_size
+    x, y = center_x, center_y  # Bắt đầu từ vị trí trung tâm
+
+    # Bắt đầu vẽ đường nằm ngang
+    pyautogui.moveTo(x, y)  # Di chuyển đến vị trí bắt đầu
+    pyautogui.mouseDown()   # Nhấn chuột để bắt đầu vẽ
+    pyautogui.moveRel(size, 0)
+    pyautogui.moveRel(0, -size)
+
+
+    for i in range(turns):
+        # Vẽ theo quy tắc mô tả
+        if i % 2 == 0:  # Di chuyển lên hoặc xuống
+            y -= size  # Đi lên
+            pyautogui.moveTo(x, y)
+            size += 1  # Tăng kích thước cho lần vẽ tiếp theo
+        else:  # Di chuyển ngang
+            x -= size * 2  # Đi sang trái
+            pyautogui.moveTo(x, y)
+            size += 1  # Tăng kích thước cho lần vẽ tiếp theo
+            
+        # Di chuyển xuống hoặc lên theo quy tắc
+        if i % 2 == 0:
+            y += size  # Đi xuống
+            pyautogui.moveTo(x, y)
+        else:
+            x += size * 3  # Đi sang phải
+            pyautogui.moveTo(x, y)
+
+    pyautogui.mouseUp()  # Nhả chuột để kết thúc vẽ
+
+# Vẽ hình xoắn ốc với kích thước ban đầu và số vòng xoắn
+draw_spiral(center_x, center_y, 20, 50)

@@ -1,0 +1,30 @@
+import subprocess
+import pyautogui
+import time
+
+# Đường dẫn đến ứng dụng Outlook
+application_path = r"C:\Program Files (x86)\Microsoft Office\root\Office16\OUTLOOK.EXE"
+subprocess.Popen(application_path, close_fds=False, shell=True)
+
+#delay 10s
+time.sleep(3)
+
+pyautogui.hotkey("ctrl", "n")
+time.sleep(1)
+
+# Nhập thông tin vào các trường
+to_address = "to_address@local.nmcorp.nissan.biz"
+cc_address = "cc_address@example.com"       
+subject = "Day la mail test"
+body = "Day la noi dung test"
+
+pyautogui.write(to_address)
+pyautogui.press("tab")
+
+pyautogui.write(cc_address)
+pyautogui.press("tab")
+
+pyautogui.write(subject)
+pyautogui.press("tab")
+
+pyautogui.write(body)

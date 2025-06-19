@@ -1,0 +1,293 @@
+# code so 1 /////////////////////////////////////////////////////////////////
+##### IMPORT #####
+import pyautogui
+import time
+from datetime import datetime
+
+##### SLIDE 9 #####
+import subprocess
+
+# application_path = r"C:\Program Files (x86)\Microsoft Office\root\Office16\OUTLOOK.EXE"
+# subprocess.Popen(application_path, close_fds=False, shell=True)
+
+
+##### SLIDE 9 #####
+def scan_activate_window():
+    inca_main_hwnd, inca_repro_search_hwnd, inca_connect_device_hwnd = None, None, None
+    all_windows_hwnd = pyautogui.getAllWindows()
+    print(all_windows_hwnd)
+
+    for window_hwnd in all_windows_hwnd:
+        if window_hwnd.title.strip().startswith("INCA") and "Build" in window_hwnd.title:
+            inca_main_hwnd = window_hwnd
+        elif window_hwnd.title.strip().lower() == "search for connected devices":
+            inca_repro_search_hwnd = window_hwnd
+        elif "connect devices" in window_hwnd.title.strip().lower():
+            inca_connect_device_hwnd = window_hwnd
+
+    return inca_main_hwnd, inca_repro_search_hwnd, inca_connect_device_hwnd
+
+
+##### SLIDE 10 #####
+# window_hwnd.minimize()
+# window_hwnd.maximize()
+# window_hwnd.activate()
+# window_hwnd.close()
+
+
+##### SLIDE 10 #####
+def active_maximize_window(window_hwnd, delay=1):
+    try:
+        pyautogui.hotkey('winleft', 'd', interval=0.2)
+        time.sleep(0.5)
+        window_hwnd.maximize()
+        time.sleep(delay)
+    except Exception as err:
+        raise Exception(f"Can't active_maximize_window: {err}")
+
+
+##### SLIDE 12 #####
+def scan_images_continuously(img_list, confidence, timeout):
+    delta_time = 0
+    start_time = time.time()
+    print(f"Finding images {img_list}")
+
+    while delta_time <= timeout:
+        for img in img_list:
+            try:
+                image = pyautogui.locateCenterOnScreen(img, confidence=confidence)
+            except pyautogui.ImageNotFoundException:
+                image = None
+
+            if image == None:
+                continue
+            else:
+                print(f"Found image {img}")
+                return image[0], image[1]
+
+        end_time = time.time()
+        delta_time = end_time - start_time
+
+        print('finding ...')
+        print(delta_time)
+        time.sleep(1)
+
+    print(f"Not found images {img_list}")
+    raise TimeoutError(f"Timeout: find_image_lst() can't find {img_list} in {timeout} second. Please check again!")
+
+
+##### SLIDE 14 #####
+def waiting_for_loading_screen(img_lst, confidence, appear_timeout=30):
+    delta_time = 0
+    start_time = time.time()
+    while delta_time <= appear_timeout:
+        for img in img_lst:
+            try:
+                img_appear = pyautogui.locateCenterOnScreen(img, confidence=confidence)
+            except pyautogui.ImageNotFoundException:
+                img_appear = None
+
+            if not img_appear:
+                continue
+            else:
+                print(f"{img} is loading...")
+
+                while img_appear:
+                    try:
+                        img_appear = pyautogui.locateCenterOnScreen(img, confidence=confidence)
+                    except pyautogui.ImageNotFoundException:
+                        img_appear = None
+
+                print(f"{img} has been loaded.")
+                return True
+
+        end_time = time.time()
+        delta_time = end_time - start_time
+
+    raise TimeoutError(f"Not found loading images: {img_lst} ...")
+
+# code so 2 /////////////////////////////////////////////////////////////////
+# ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+# Created by Tien Dat(KNT19856) on 2024/04/22 12:39 pm
+# Authors: 
+# Group: DX
+# Project: 
+# Script version: 
+# Last modify: 
+# Description: None
+# ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+import os.path
+import time
+import traceback
+
+import pyautogui
+import pyperclip
+from configs import images_folder
+from day7 import scan_images_continuously, waiting_for_loading_screen
+
+
+def scan_activate_window():
+    pyautogui.hotkey('win', 'd', interval=0.2)
+    time.sleep(1)
+
+    inca_main_hwnd, outlook_hwnd = None, None
+    all_windows_hwnd = pyautogui.getAllWindows()
+    [print(window.title) for window in all_windows_hwnd]
+
+    for window_hwnd in all_windows_hwnd:
+        if "PowerPoint" in window_hwnd.title and 'Day 7 - Topic GUI Automation_trans.pptx' in window_hwnd.title:
+            inca_main_hwnd = window_hwnd
+        if 'outlook' in window_hwnd.title.lower() and 'KNT19856@local.nmcorp.nissan.biz' in window_hwnd.title:
+            outlook_hwnd = window_hwnd
+
+    return inca_main_hwnd, outlook_hwnd
+
+
+if __name__ == '__main__':
+    # pyautogui.moveTo(400, 400, duration=0.2)
+    # time.sleep(2)
+    # pyautogui.dragTo(500, 500, duration=1, button='left')
+
+    # time.sleep(3)
+    # # pyautogui.scroll(3000)
+
+    # img_path = os.path.join(images_folder, 'insert_button.PNG')
+    # x, y = pyautogui.locateCenterOnScreen(img_path, confidence=0.9)
+    # pyautogui.doubleClick(x, y, duration=0.2)
+    # time.sleep(3)
+
+    x, y = pyautogui.locateCenterOnScreen('images/trans_button.PNG', confidence=0.9)
+    # pyautogui.leftClick(x, y, duration=0.2)
+    print(x, y)
+
+    # pyautogui.write('Hello world!', interval=0.1)
+    # pyperclip.copy("Hello world!")
+    # time.sleep(1)
+    # pyautogui.hotkey('ctrl', 'v', interval=0.2)
+
+    # pyautogui.press('enter')
+    # time.sleep(1)
+    # pyautogui.press('enter')
+    # time.sleep(1)
+    # pyautogui.press('enter')
+    # time.sleep(1)
+
+    # import subprocess
+    #
+    # application_path = r"C:\Program Files (x86)\Microsoft Office\root\Office16\OUTLOOK.EXE"
+    # subprocess.Popen(application_path, close_fds=False, shell=True)
+
+    # all_windows_hwnd = pyautogui.getAllWindows()
+    # [print(window.title) for window in all_windows_hwnd]
+
+    # powerpoint, outlook_hwnd = scan_activate_window()
+    #
+    # powerpoint.maximize()
+    # time.sleep(2)
+    # outlook_hwnd.close()
+
+    # img_path1 = os.path.join(images_folder, 'insert_button.PNG')
+    # img_path2 = os.path.join(images_folder, 'insert_button2.PNG')
+    #
+    # img_list = [
+    #     img_path1,
+    #     img_path2
+    # ]
+    #
+    # try:
+    #     x, y = scan_images_continuously(img_list, confidence=0.9, timeout=5)
+    #     pyautogui.doubleClick(x, y, duration=0.2)
+    # except TimeoutError as e:
+    #     print(f'Error: {e}. {traceback.format_exc()}')
+
+    # img_path1 = os.path.join(images_folder, 'outlook_loading_screen.PNG')
+    #
+    # img_list = [
+    #     img_path1
+    # ]
+
+    # try:
+    #     waiting_for_loading_screen(img_lst=img_list, confidence=0.9, appear_timeout=30)
+    # except TimeoutError as e:
+    #     print(f'Error: {e}. {traceback.format_exc()}')
+
+    # print(pyautogui.__version__)
+
+
+
+
+# code so 3 /////////////////////////////////////////////////////////////////
+import pyautogui
+import time
+
+pyautogui.useImageNotFoundException()
+
+
+
+import subprocess
+application_path = r"C:\Program Files (x86)\Microsoft Office\root\Office16\OUTLOOK.EXE"
+subprocess.Popen(application_path, close_fds=False, shell=True)
+
+def scan_activate_window():
+    outlook_main_hwnd = None
+    all_windows_hwnd = pyautogui.getAllWindows()
+    # print(all_windows_hwnd)
+    for window_hwnd in all_windows_hwnd:
+        if window_hwnd.title.strip() == "Inbox - anhtuan-nguyen@mail.nissan.co.jp - Outlook":
+            outlook_main_hwnd = window_hwnd
+            break
+    return outlook_main_hwnd
+
+# def active_maximize_window(window_hwnd, delay=1):
+#     try:
+#         pyautogui.hotkey('winleft', 'd', interval=0.2)
+#         time.sleep(0.5)
+#         window_hwnd.maximize()
+#         time.sleep(delay)
+#     except Exception as err:
+#         raise Exception(f"Can't active_maximize_window: {err}")
+
+def scan_images_continuously(img, confidence, timeout=30):
+    delta_time = 0
+    start_time = time.time()
+    while delta_time <= timeout:
+        try:
+            image = pyautogui.locateCenterOnScreen(img, confidence=confidence)
+            print(f"Found image {img}")
+            return image[0], image[1]
+        except:
+            end_time = time.time()
+            delta_time = end_time - start_time
+            print(f"Not found images")
+            continue
+    raise TimeoutError(f"Not found loading images: {img} ...")
+
+
+def waiting_for_loading_screen(img, confidence, appear_timeout=30):
+    delta_time = 0
+    start_time = time.time()
+    while delta_time <= appear_timeout:
+        try:
+            img_appear = pyautogui.locateCenterOnScreen(img, confidence=confidence)
+            print(f"{img} is loading...") 
+            end_time = time.time()
+            delta_time = end_time - start_time
+            continue   
+        except:                                      
+            return
+    raise TimeoutError(f"Not found loading images: {img} ...")
+
+
+# x, y = scan_images_continuously(r"C:\N.A.Tuan\Tool\DR31\PythonLearning\Ex7\image\7.png", 0.9)
+# pyautogui.leftClick(x=x, y=y, duration=0.2) 
+scan_images_continuously(r"C:\N.A.Tuan\Tool\DR31\PythonLearning\Ex7\image\outlook.png", 0.9)
+
+waiting_for_loading_screen(r"C:\N.A.Tuan\Tool\DR31\PythonLearning\Ex7\image\outlook.png", 0.9)
+
+window_hwnd = scan_activate_window()
+
+
+
+
+
+

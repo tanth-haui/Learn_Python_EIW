@@ -98,5 +98,10 @@ Tạo một dict, trong đó key là các tên đuôi file lấy từ file .pick
 và lưu dict này thành file_count.json trong thư mục "File information"
 
 
-
+/////////////////////Thứ 5 19/6/////////////////////////////
+Tự động mở ứng dụng Máy tính và thực hiện một số phép tính (vd: 20x10+100/5, ...)
+Tự động mở Outlook, soạn thảo và gửi 1 email bất kỳ (điền đầy đủ các thông tin To, CC, Chủ đề, Nội dung thư ...)
+Tự động mở ứng dụng Pain và vẽ Hình 1, Hình 2.
+(BTVN) Vẽ lại lưu đồ thuật toán của 2 hàm tại phần “5. Chức năng xử lý đồng bộ”
+(BTVN) Áp dụng kiến thức đã học để bật và tương tác cơ bản với các app mà mọi người làm việc hàng ngày (Ví dụ như bật NX, ANSA, mathlab .... ), nếu ko có thể tương tác với các app trên window như Paint, Chrome, Edge ...  -> Nộp cả file text miêu tả tool tự động hóa phần nào, có kèm video chạy tool càng tốt.
 

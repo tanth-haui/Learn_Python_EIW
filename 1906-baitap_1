@@ -1,0 +1,34 @@
+import pyautogui
+
+keys = {
+    "0": r"C:\Training-Code\Python\Code_Folder\06-19\Data\0.PNG",
+    "1": r"C:\Training-Code\Python\Code_Folder\06-19\Data\1.PNG",
+    "2": r"C:\Training-Code\Python\Code_Folder\06-19\Data\2.PNG",
+    "3": r"C:\Training-Code\Python\Code_Folder\06-19\Data\3.PNG",
+    "4": r"C:\Training-Code\Python\Code_Folder\06-19\Data\4.PNG",
+    "5": r"C:\Training-Code\Python\Code_Folder\06-19\Data\5.PNG",
+    "6": r"C:\Training-Code\Python\Code_Folder\06-19\Data\6.PNG",
+    "7": r"C:\Training-Code\Python\Code_Folder\06-19\Data\7.PNG",
+    "8": r"C:\Training-Code\Python\Code_Folder\06-19\Data\8.PNG",
+    "9": r"C:\Training-Code\Python\Code_Folder\06-19\Data\9.PNG",
+    "+": r"C:\Training-Code\Python\Code_Folder\06-19\Data\plus.PNG",
+    "-": r"C:\Training-Code\Python\Code_Folder\06-19\Data\minus.PNG",
+    "*": r"C:\Training-Code\Python\Code_Folder\06-19\Data\multiply.PNG",
+    "/": r"C:\Training-Code\Python\Code_Folder\06-19\Data\divide.PNG",
+    "=": r"C:\Training-Code\Python\Code_Folder\06-19\Data\equal.PNG"
+}
+
+def press_key(key):
+    position = pyautogui.locateCenterOnScreen(keys[key], confidence=0.9)
+    if position is not None:
+        pyautogui.click(position)
+    else:
+        print(f"Không tìm thấy phím {key}")
+
+# Phép tính cần nhập
+calculation = "20*10+100/5"
+
+for char in calculation:
+    press_key(char)
+
+press_key('=')

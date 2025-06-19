@@ -86,3 +86,55 @@ def draw_spiral(center_x, center_y, initial_size, turns):
 
 # Vẽ hình xoắn ốc với kích thước ban đầu và số vòng xoắn
 draw_spiral(center_x, center_y, 20, 50)
+
+
+
+
+
+
+#tham khao
+import subprocess
+import pyautogui
+import time
+import math
+
+# Mở ứng dụng Paint
+paint_path = r"C:\Windows\system32\mspaint.exe"
+subprocess.Popen(paint_path)
+time.sleep(3)  # Chờ Paint mở
+
+# Di chuyển chuột đến vùng vẽ (điều chỉnh nếu cần)
+pyautogui.moveTo(400, 300)
+pyautogui.click()
+
+# Vẽ các hình vuông đồng tâm
+screen_width, screen_height = 1920, 1200 # Nhập kích thước màn hình của bạn
+
+center_x = screen_width // 2
+center_y = screen_height // 2
+square_count = 5
+spacing = 10
+
+for i in range(square_count):
+    offset = spacing * i
+    pyautogui.moveTo(center_x - offset, center_y - offset)
+    pyautogui.dragRel(2 * offset, 0, duration=0.2)
+    pyautogui.dragRel(0, 2 * offset, duration=0.2)
+    pyautogui.dragRel(-2 * offset, 0, duration=0.2)
+    pyautogui.dragRel(0, -2 * offset, duration=0.2)
+
+# Vẽ đường xoắn ốc nối các hình vuông
+angle = 0
+radius = 10
+pyautogui.moveTo(center_x, center_y)
+pyautogui.mouseDown()
+
+for i in range(300):
+    angle += 0.1
+    radius += 0.5
+    x = center_x + int(radius * math.cos(angle))
+    y = center_y + int(radius * math.sin(angle))
+    pyautogui.moveTo(x, y, duration=0.01)
+
+pyautogui.mouseUp()
+
